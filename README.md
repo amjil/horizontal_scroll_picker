@@ -15,6 +15,8 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
+![image](https://github.com/amjil/horizontal_scroll_picker/blob/master/horizontal_picker.gif)
+
 ## Run this example
 1. Install the clj command.
 2. Init the example `clj -M:cljd init`
