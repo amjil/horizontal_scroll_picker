@@ -1,0 +1,57 @@
+(ns acme.main
+  (:require ["package:flutter/material.dart" :as m]
+            [cljd.flutter.alpha2 :as f]))
+
+(defn scroll-list []
+  (let [config (atom {:selected 50})]
+    (f/widget
+     :get [m/ScaffoldMessenger]
+     :watch [{:keys [selected]} config]
+     :let [controller (m/FixedExtentScrollController .initialItem selected)]
+     (m/RotatedBox
+      .quarterTurns 3
+      .child (m/ListWheelScrollView
+              .magnification 2.0
+              .controller controller
+              .itemExtent 60.0
+              .onSelectedItemChanged (fn [x]
+                                      ;;  (.showSnackBar
+                                      ;;   scaffold-messenger
+                                      ;;   (m/SnackBar
+                                      ;;    .content (m/Text (str "Yay! A SnackBar!" x))))
+                                       (swap! config assoc :selected x)
+                                       nil)
+              .children
+              (for [x (range 0 100)]
+                (m/RotatedBox .quarterTurns 1
+                              .child (m/AnimatedContainer
+                                      .duration (Duration .milliseconds 400)
+                                      .width (if (= x selected) 60 50)
+                                      .height (if (= x selected) 60 50)
+                                      .alignment (.center m/Alignment)
+                                      .decoration (m/BoxDecoration
+                                                   .color (if (= x selected)
+                                                            (.red m/Colors)
+                                                            (.grey m/Colors))
+                                                   .shape (.circle m/BoxShape))
+                                      .child (m/Text (str x))))))))))
+
+(defn main []
+  (m.WidgetsFlutterBinding/ensureInitialized)
+  (m/runApp
+   (f/widget
+    :let [foo :bar]
+    :bind {:list/selected (atom 50)}
+    (m/MaterialApp
+     .title "Welcome to Flutter"
+     .theme (m/ThemeData .primarySwatch m.Colors/blue)
+     .home (m/Scaffold
+            ;; .body (m/Center
+            ;;        .child (m/Text "This text is Centered."
+            ;;                       .style (m/TextStyle
+            ;;                               .color m.Colors/red
+            ;;                               .fontSize 32.0)))
+            .body
+            (m/Center
+             .child (scroll-list))))
+    .debugShowCheckedModeBanner false)))
